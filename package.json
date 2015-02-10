@@ -1,0 +1,43 @@
+{
+  "name": "splitslider",
+  "version": "0.0.1",
+  "title": "jQuery Split-Slider Plugin",
+  "description": "Split Slider is an image carousel that animates an image split into two equal halves. Each half animates vertically from the top or bottom, in opposing directions.",
+  "author": {
+    "name": "Christopher Tino",
+    "url": "https://github.com/christophertino"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/christophertino/split-slider-plugin.git"
+  },
+  "keywords": [
+    "jquery",
+    "slider",
+    "carousel"
+  ],
+  "bugs": "https://github.com/christophertino/split-slider-plugin/issues",
+  "docs": "https://github.com/christophertino/split-slider-plugin#readme",
+  "download": "https://github.com/christophertino/split-slider-plugin/archive/master.zip",
+  "dependencies": {
+    "jquery": ">=1.4"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    }
+  ],
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-sass": "~0.17.0",
+    "grunt-contrib-clean": "~0.6.0",
+    "grunt-contrib-compress": "~0.13.0",
+    "grunt-contrib-concat": "~0.5.0",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-watch": "~0.6.0",
+    "grunt-contrib-uglify": "~0.7.0",
+    "load-grunt-tasks": "~2.0.0"
+  }
+}
