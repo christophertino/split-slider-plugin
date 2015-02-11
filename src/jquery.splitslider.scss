@@ -4,7 +4,6 @@
  */
 
 //Variables
-$animationLength: 0.5s;
 $viewportHeight: 540px;
 
 /* Main Content Elements */
@@ -20,17 +19,17 @@ $viewportHeight: 540px;
 		overflow: hidden;
 		position: relative;
 		width: 100%;
-		-webkit-transform: translatez(0);
+		transform: translateZ(0px);
+		-moz-transform: translateZ(0px);
+		-webkit-transform: translateZ(0px);
 	}
-	ul.slidegroup {
+	ul.left-images, ul.right-images {
 		list-style: none;
 		margin: 0;
 		padding: 0;
-		position: relative;
-		width: auto;
-		transition-duration: $animationLength;
-		-moz-transition-duration: $animationLength;
-		-webkit-transition-duration: $animationLength;
+		position: absolute;
+		top: 0;
+		width: 50%;
 		> li {
 			float: none;
 			list-style: none;
@@ -38,6 +37,12 @@ $viewportHeight: 540px;
 			padding: 0;
 			position: relative;
 		}
+	}
+	ul.left-images {
+		left: 0;
+	}
+	ul.right-images {
+		right: 0;
 	}
 	img {
 		display: block;
@@ -50,5 +55,15 @@ $viewportHeight: 540px;
 
 /* Controls */
 
-
+/* Loader */
+.loader {
+	min-height: 50px;
+	background: url(../img/loader.gif) center center no-repeat #ffffff;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 2000;
+}
 

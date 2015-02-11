@@ -1,23 +1,33 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
+	<meta charset="utf-8">
 	<title>jQuery Split Slider Plugin</title>
-	<link type="text/css" href="jquery.splitslider.css" rel="stylesheet" />
+	<link type="text/css" href="css/jquery.splitslider.css" rel="stylesheet" />
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-	<script src="jquery.splitslider.js"></script>
+	<script src="../src/jquery.splitslider.js"></script>
 	<script>
 		$(function() {
 			$(".split-slider").splitslider({
-				caption: true
+				captions: true,
+				slideWidth: 1100
 			});
 		});
 	</script>
 </head>
 <body>
 	<div class="split-slider">
-		<ul class="left-images"></ul>
-		<ul class="right-images"></ul>
-		<ul class="captions"></ul>
+		<ul class="left-images">
+			<li><img src="img/slider_01_left.jpg" /></li>
+			<li><img src="img/slider_02_left.jpg" /></li>
+			<li><img src="img/slider_03_left.jpg" /></li>
+		</ul>
+		<ul class="right-images">
+			<li><img src="img/slider_01_right.jpg" /></li>
+			<li><img src="img/slider_02_right.jpg" /></li>
+			<li><img src="img/slider_03_right.jpg" /></li>
+		</ul>
+		<!-- <ul class="captions"></ul> -->
 	</div>
 </body>
 </html>

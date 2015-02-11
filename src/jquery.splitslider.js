@@ -7,16 +7,17 @@
 	//Set plugin defaults
 	var defaults = {
 		captions: true,
-		speed: 500,
-		slideWidth: 0
+		delay: 3000,
+		slideWidth: 0,
+		speed: 0.5
 	};
 
 	//Constructor function
 	function SplitSlider (element, options) {
-		this.el = element;
+		this.el = $(element);
 		this.settings = $.extend({}, defaults, options);
 		this.defaults = defaults;
-		this.init();
+		this._init();
 	}
 
 	//Prototype object methods
@@ -35,7 +36,8 @@
 			}
 
 			//Wrap with container divs
-			this.el.wrap("<div class=\"slider-wrap\"><div class=\"slider-view\"></div></div>");
+			this.el.wrap("<div class=\"slider-wrap\"></div>");
+			this.el.addClass("slider-view");
 
 			//Set max slideshow width
 			if (this.settings.slideWidth === 0){
@@ -43,36 +45,99 @@
 			}
 			$(".slider-wrap").css("max-width", this.settings.slideWidth);
 
-			//Turn on auto-play timer
+			//Establish some meta about the slides
+			this.slideHeight = $(".slider-view").outerHeight();
+			this.slideCount = $(".left-images").children().length;
+			this.activeSlide = 1; //not zero based
+			this.rightImgPos = this._buildRightImgArray(this.slideCount);
+			this.browserPrefix = "-" + this._getBrowserPrefix() + "-";
 
-			//Animation
-			var propValue = slider.settings.mode === "vertical" ? "translate3d(0, " + value + "px, 0)" : "translate3d(" + value + "px, 0, 0)";
-			// add the CSS transition-duration
-			el.css("-" + slider.cssPrefix + "-transition-duration", duration / 1000 + "s");
-			setTimeout(function() {
-				// set the property value
-				el.css(slider.animProp, propValue);
-				// if value 0, just update
-				if(value === 0) {
-					updateAfterSlideTransition();
-				} else {
-					// bind a callback method - executes when CSS transition completes
-					el.bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){
-						// unbind the callback
-						el.unbind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd");
-						updateAfterSlideTransition();
-					});
-				}
-			}, 0);
+			//make sure we have equal number of left and right slides
+			if(!this._checkSliderLength()) {
+				console.log("You must have an equal number of left- and right-images.")
+				return false;
+			}
+
+			//build our initial animation
+			this._loadFirstSlides();
+
+			//Turn on auto-play timer
+			var autoPlay = setInterval(function(self) {
+				self.advanceSlide();
+			}, this.settings.delay, this);
 
 			//Controls
 
 
 			//Pager
 
+		},
 
-			console.log(this.settings);
-			console.log(this._defaults);
+		_getBrowserPrefix: function(){
+			var temp = document.createElement('div');
+			var properties = ['WebkitPerspective', 'MozPerspective', 'OPerspective', 'msPerspective'];
+			for(var i in properties){
+				if(temp.style[properties[i]] !== undefined){
+					return properties[i].replace('Perspective', '').toLowerCase();
+				}
+			}
+			return false;
+		},
+
+		_checkSliderLength: function () {
+			return this.slideCount == $(".right-images").children().length;
+		},
+
+		//Create a reverse-order index array to help track our right-hand images
+		_buildRightImgArray: function(numSlides){
+			var arr = new Array(numSlides);
+			var count = arr.length;
+			arr = $.map(arr, function(n){
+				return count--;
+			});
+			return arr;
+		},
+
+		_reverseSlides: function() {
+			var reversed = $(".right-images li").get().reverse();
+			$(".right-images").empty();
+			for (var i in reversed) {
+				$(".right-images").append(reversed[i]);
+			}
+			var y = -this.slideHeight * this.slideCount;
+			$(".right-images").css(this.browserPrefix + "transform", "translate3d(0, " + y + "px, 0)");
+		},
+
+		_loadFirstSlides: function(){
+			// bind a callback method - executes when CSS transition completes
+			$(".right-images").on("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){
+				console.log('end')
+				// unbind the callback
+				$(".right-images").off("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd");
+				$(".loader").remove();
+				$(".left-images, .right-images").fadeIn(500);
+			});
+
+			//Show loader gif
+			this.el.append("<div class=\"loader\"></div>")
+
+			//Hide slides and set animation duration
+			var duration = this.settings.speed.toString() + "s";
+			$(".left-images, .right-images").hide().css(this.browserPrefix + "transition-duration", duration);
+
+			//set start position for left-images
+			$(".left-images").css(this.browserPrefix + "transform", "translate3d(0, " + (-this.slideHeight) + "px, 0)");
+
+			//clone first and last slides for infinite loop
+			$(".left-images li").eq(0).clone().appendTo(".left-images").addClass('clone');
+			$(".left-images li").eq(this.slideCount-1).clone().prependTo(".left-images").addClass('clone');
+			$(".right-images li").eq(0).clone().appendTo(".right-images").addClass('clone');
+			$(".right-images li").eq(this.slideCount-1).clone().prependTo(".right-images").addClass('clone');
+
+			//reverse the order of the right slides
+			this._reverseSlides();
+
+
 		},
 
 		/**
@@ -81,8 +146,47 @@
 		 * @access public
 		 * ----------------------------
 		 */
-		yourOtherFunction: function () {
-			// some logic
+		advanceSlide: function () {
+			//re-establish duration
+			var duration = this.settings.speed.toString() + "s";
+			$(".left-images, .right-images").css(this.browserPrefix + "transition-duration", duration);
+
+			var leftYPos = -(this.activeSlide * this.slideHeight);
+			var rightYPos = -(this.rightImgPos[this.activeSlide-1] * this.slideHeight);
+			var lastSlide = false;
+
+			if (this.activeSlide == this.slideCount) {
+				//we are on the last slide
+				lastSlide = true;
+			}
+
+			leftYPos -= this.slideHeight;
+			rightYPos += this.slideHeight;
+
+			$(".left-images").css(this.browserPrefix + "transform", "translate3d(0, " + leftYPos + "px, 0)");
+			$(".right-images").css(this.browserPrefix + "transform", "translate3d(0, " + rightYPos + "px, 0)");
+
+			//update active slide index
+			this.activeSlide++;
+
+			//wait till animation completes
+			var self = this;
+			$(".right-images").on("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){
+				//make a few behind the scenes adjustments for the final slide
+				if (lastSlide) {
+					//reset duration for a moment
+					$(".left-images, .right-images").css(self.browserPrefix + "transition-duration", "0s");
+
+					//reset position to beginning
+					$(".left-images").css(self.browserPrefix + "transform", "translate3d(0, " + (-self.slideHeight) + "px, 0)");
+
+					var y = -self.slideHeight * self.slideCount;
+					$(".right-images").css(self.browserPrefix + "transform", "translate3d(0, " + y + "px, 0)");
+
+					self.activeSlide = 1;
+				}
+				$(".right-images").off("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd");
+			});
 		}
 	};
 
