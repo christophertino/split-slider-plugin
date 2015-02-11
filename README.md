@@ -1,37 +1,67 @@
-# jQuery Boilerplate
+# jQuery Split Slider Plugin
 
-### A jump-start for jQuery plugins development
+Split Slider is an image carousel that animates an image split into two equal halves. Each half animates vertically from the top or bottom, in opposing directions.
 
-So, you've tried your hand at writing jQuery plugins and you're comfortable putting together something that probably works. Awesome! Thing is, you think there might be better ways you could be writing them - you've seen them done a number of different ways in the wild, but aren't really sure what the differences between these patterns are or how to get started with them.
+## Basic Setup
 
-This project won't seek to provide a perfect solution to every possible pattern, but will attempt to cover a simple template for beginners and above. By using a basic defaults object, simple constructor for assigning the element to work with and extending options with defaults and a lightweight wrapper around the constructor to avoid issues with multiple instantiations.
-
-## Usage
-
-1. Include jQuery:
+Follow the index.html demo file located in the /dist folder. You'll need to split your image assets in half vertically and add them to the left-images, right-images <ul> containers, respectively. 
 
 	```html
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+	<!doctype html>
+	<html>
+	<head>
+		<title>jQuery Split Slider Plugin</title>
+		<link type="text/css" href="jquery.splitslider.css" rel="stylesheet" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+		<script src="jquery.splitslider.js"></script>
+		<script>
+			$(function() {
+				$(".split-slider").splitslider({
+					caption: true
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div class="split-slider">
+			<ul class="left-images"></ul>
+			<ul class="right-images"></ul>
+			<ul class="captions"></ul>
+		</div>
+	</body>
+	</html>
 	```
 
-2. Include plugin's code:
-
-	```html
-	<script src="dist/jquery.boilerplate.min.js"></script>
-	```
-
-3. Call the plugin:
+## Configuration Options
 
 	```javascript
-	$("#element").defaultPluginName({
-		propertyName: "a custom value"
+	$('.selector').splitslider({
+		caption: true,
 	});
 	```
 
-## History
+## Developer Setup
 
-Check [Releases](https://github.com/jquery-boilerplate/jquery-boilerplate/releases) for detailed changelog.
+1. Install Grunt
+
+	```sh
+	$ npm install -g grunt-cli
+	```
+
+2. Install npm packages
+	
+	Note: grunt-sass will sometimes hang if you install using sudo. Try not to use sudo, at least for that package. 
+
+	```sh
+	$ npm install
+	```
+
+3. Run Grunt Tasks
+
+	```sh
+	$ grunt
+	```
 
 ## License
 
-[MIT License](http://zenorocha.mit-license.org/) © Zeno Rocha
+[MIT License](http://opensource.org/licenses/MIT)

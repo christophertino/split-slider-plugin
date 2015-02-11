@@ -1,0 +1,40 @@
+/**
+ * jQuery Split-Slider Plugin
+ * Default CSS
+ */
+/* Main Content Elements */
+.slider-wrap {
+  margin: 0 auto;
+  padding: 0;
+  position: relative;
+  *zoom: 1;
+  touch-action: pan-y;
+  -ms-touch-action: pan-y; }
+  .slider-wrap .slider-view {
+    height: 540px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    -webkit-transform: translatez(0); }
+  .slider-wrap ul.slidegroup {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    width: auto;
+    transition-duration: 0.5s;
+    -moz-transition-duration: 0.5s;
+    -webkit-transition-duration: 0.5s; }
+    .slider-wrap ul.slidegroup > li {
+      float: none;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      position: relative; }
+  .slider-wrap img {
+    display: block;
+    height: auto;
+    max-width: 100%; }
+
+/* Pager */
+/* Controls */

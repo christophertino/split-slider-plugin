@@ -3,25 +3,52 @@
  * Default CSS
  */
 
-.slide-wrapper {
-	position: relative;
-	margin: 0 auto 60px;
+//Variables
+$animationLength: 0.5s;
+$viewportHeight: 540px;
+
+/* Main Content Elements */
+.slider-wrap {
+	margin: 0 auto;
 	padding: 0;
+	position: relative;
 	*zoom: 1;
-	-ms-touch-action: pan-y;
 	touch-action: pan-y;
-	img {
-		max-width: 100%;
-		display: block;
-	}
-	.slide-viewport {
+	-ms-touch-action: pan-y;
+	.slider-view {
+		height: $viewportHeight;
+		overflow: hidden;
+		position: relative;
+		width: 100%;
 		-webkit-transform: translatez(0);
 	}
 	ul.slidegroup {
 		list-style: none;
 		margin: 0;
 		padding: 0;
+		position: relative;
+		width: auto;
+		transition-duration: $animationLength;
+		-moz-transition-duration: $animationLength;
+		-webkit-transition-duration: $animationLength;
+		> li {
+			float: none;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			position: relative;
+		}
+	}
+	img {
+		display: block;
+		height: auto;
+		max-width: 100%;
 	}
 }
+
+/* Pager */
+
+/* Controls */
+
 
 

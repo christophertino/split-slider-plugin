@@ -20,9 +20,6 @@
   "bugs": "https://github.com/christophertino/split-slider-plugin/issues",
   "docs": "https://github.com/christophertino/split-slider-plugin#readme",
   "download": "https://github.com/christophertino/split-slider-plugin/archive/master.zip",
-  "dependencies": {
-    "jquery": ">=1.4"
-  },
   "licenses": [
     {
       "type": "MIT",

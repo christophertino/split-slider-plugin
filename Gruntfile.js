@@ -20,7 +20,7 @@ module.exports = function(grunt) {
 		concat: {
 			dist: {
 				src: ["src/jquery.splitslider.js"],
-				dest: "dist/jquery.splitslider.js"
+				dest: "dist/scripts/jquery.splitslider.js"
 			},
 			options: {
 				banner: "<%= meta.banner %>"
@@ -38,8 +38,8 @@ module.exports = function(grunt) {
 		// Minify JS
 		uglify: {
 			my_target: {
-				src: ["dist/jquery.splitslider.js"],
-				dest: "dist/jquery.splitslider.min.js"
+				src: ["dist/scripts/jquery.splitslider.js"],
+				dest: "dist/scripts/jquery.splitslider.min.js"
 			},
 			options: {
 				banner: "<%= meta.banner %>",
@@ -57,18 +57,18 @@ module.exports = function(grunt) {
 					outputStyle: "expanded"
 				},
 				files: {
-					"dist/jquery.splitslider.css" : "src/jquery.splitslider.scss"
+					"dist/css/jquery.splitslider.css" : "src/jquery.splitslider.scss"
 				}
 			}
 		},
 
 		clean : {
 			css : [
-				"dist/jquery.splitslider.css"
+				"dist/css/jquery.splitslider.css"
 			],
 			js : [
-				"dist/jquery.splitslider.min.js",
-				"dist/jquery.splitslider.js"
+				"dist/scripts/jquery.splitslider.min.js",
+				"dist/scripts/jquery.splitslider.js"
 			]
 		},
 
