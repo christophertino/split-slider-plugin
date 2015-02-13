@@ -19,9 +19,7 @@ $viewportHeight: 540px;
 		overflow: hidden;
 		position: relative;
 		width: 100%;
-		transform: translateZ(0px);
-		-moz-transform: translateZ(0px);
-		-webkit-transform: translateZ(0px);
+		-webkit-transform: translateZ(0px); /*Force hardware acceleration in Chrome */
 	}
 	ul.left-images, ul.right-images {
 		list-style: none;
@@ -30,6 +28,12 @@ $viewportHeight: 540px;
 		position: absolute;
 		top: 0;
 		width: 50%;
+		-moz-transition-property: transform;
+		-webkit-transition-property: -webkit-transform;
+		transition-property: transform;
+		-moz-transition-timing-function: ease-in-out;
+		-webkit-transition-timing-function: ease-in-out;
+		transition-timing-function: ease-in-out;
 		> li {
 			float: none;
 			list-style: none;
@@ -52,11 +56,74 @@ $viewportHeight: 540px;
 }
 
 /* Pager */
+.slider-wrap {
+	.pager {
+		bottom: 25px;
+		color: #666;
+		font-family: Arial;
+		font-size: .85em;
+		font-weight: bold;
+		position: absolute;
+		text-align: center;
+		width: 100%;
+		z-index: 9999;
+		.pager-item {
+			display: inline-block;
+			font-size: 0;
+			line-height: 0;
+			*zoom: 1;
+			*display: inline;
+			span.pager-link {
+				background: #666;
+				border-radius: 5px;
+				cursor: pointer;
+				display: block;
+				height: 10px;
+				margin: 0 5px;
+				outline: 0;
+				text-indent: -9999px;
+				width: 10px;
+				&:hover, &:focus {
+					background: #000;
+				}
+			}
+		}
+	}
+}
 
 /* Controls */
+.slider-wrap {
+	.controls .control-arrows {
+		span {
+			cursor: pointer;
+			height: 32px;
+			margin-top: -16px;
+			outline: 0;
+			position: absolute;
+			text-indent: -9999px;
+			top: 50%;
+			width: 32px;
+			z-index: 9999;
+		}
+		span.prev {
+			background: url(../img/controls.png) no-repeat 0 -32px;
+			left: 10px;
+			&:hover, &:focus {
+				background-position: 0 0;
+			}
+		}
+		span.next {
+			background: url(../img/controls.png) no-repeat -43px -32px;
+			right: 10px;
+			&:hover, &:focus {
+				background-position: -43px 0;
+			}
+		}
+	}
+}
 
 /* Loader */
-.loader {
+.slider-view .loader {
 	min-height: 50px;
 	background: url(../img/loader.gif) center center no-repeat #ffffff;
 	height: 100%;
@@ -66,4 +133,3 @@ $viewportHeight: 540px;
 	left: 0;
 	z-index: 2000;
 }
-
