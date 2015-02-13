@@ -7,11 +7,11 @@
   margin: 0 auto;
   padding: 0;
   position: relative;
+  width: 100%;
   *zoom: 1;
   touch-action: pan-y;
   -ms-touch-action: pan-y; }
   .slider-wrap .slider-view {
-    height: 540px;
     overflow: hidden;
     position: relative;
     width: 100%;
@@ -31,7 +31,6 @@
     -webkit-transition-timing-function: ease-in-out;
     transition-timing-function: ease-in-out; }
     .slider-wrap ul.left-images > li, .slider-wrap ul.right-images > li {
-      float: none;
       list-style: none;
       margin: 0;
       padding: 0;
@@ -39,7 +38,7 @@
   .slider-wrap ul.left-images {
     left: 0; }
   .slider-wrap ul.right-images {
-    right: 0; }
+    left: 50%; }
   .slider-wrap img {
     display: block;
     height: auto;
@@ -72,7 +71,7 @@
       outline: 0;
       text-indent: -9999px;
       width: 10px; }
-      .slider-wrap .pager .pager-item span.pager-link:hover, .slider-wrap .pager .pager-item span.pager-link:focus {
+      .slider-wrap .pager .pager-item span.pager-link:hover, .slider-wrap .pager .pager-item span.pager-link:focus, .slider-wrap .pager .pager-item span.pager-link.active {
         background: #000; }
 
 /* Controls */
@@ -96,6 +95,17 @@
   right: 10px; }
   .slider-wrap .controls .control-arrows span.next:hover, .slider-wrap .controls .control-arrows span.next:focus {
     background-position: -43px 0; }
+
+/* CAPTIONS */
+.slider-wrap ul.captions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 10; }
+  .slider-wrap ul.captions > li {
+    display: none;
+    text-align: center; }
 
 /* Loader */
 .slider-view .loader {

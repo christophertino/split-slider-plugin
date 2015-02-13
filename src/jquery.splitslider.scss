@@ -3,19 +3,16 @@
  * Default CSS
  */
 
-//Variables
-$viewportHeight: 540px;
-
 /* Main Content Elements */
 .slider-wrap {
 	margin: 0 auto;
 	padding: 0;
 	position: relative;
+	width: 100%;
 	*zoom: 1;
 	touch-action: pan-y;
 	-ms-touch-action: pan-y;
 	.slider-view {
-		height: $viewportHeight;
 		overflow: hidden;
 		position: relative;
 		width: 100%;
@@ -35,7 +32,6 @@ $viewportHeight: 540px;
 		-webkit-transition-timing-function: ease-in-out;
 		transition-timing-function: ease-in-out;
 		> li {
-			float: none;
 			list-style: none;
 			margin: 0;
 			padding: 0;
@@ -46,7 +42,7 @@ $viewportHeight: 540px;
 		left: 0;
 	}
 	ul.right-images {
-		right: 0;
+		left: 50%;
 	}
 	img {
 		display: block;
@@ -83,7 +79,7 @@ $viewportHeight: 540px;
 				outline: 0;
 				text-indent: -9999px;
 				width: 10px;
-				&:hover, &:focus {
+				&:hover, &:focus, &.active {
 					background: #000;
 				}
 			}
@@ -118,6 +114,21 @@ $viewportHeight: 540px;
 			&:hover, &:focus {
 				background-position: -43px 0;
 			}
+		}
+	}
+}
+
+/* CAPTIONS */
+.slider-wrap {
+	ul.captions {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		position: relative;
+		z-index: 10;
+		> li {
+			display: none;
+			text-align: center;
 		}
 	}
 }

@@ -8,7 +8,12 @@
 	"noarg": true,
 	"onevar": true,
 	"quotmark": "double",
-	"undef": false,
+	"undef": true,
 	"unused": false,
-	"node": true
+	"node": true,
+	"globals": {
+		"jQuery": false,
+		"window": false,
+		"document": false
+	}
 }
