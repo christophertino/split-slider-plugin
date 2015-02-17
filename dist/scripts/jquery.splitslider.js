@@ -17,7 +17,7 @@
 		controls: true, //display left and right arrows
 		delay: 3000, //length between slide transitions in miliseconds
 		pager: true, //display pager dots below the slider
-		slideWidth: 1000, //set max width of the slider
+		slideWidth: 1000, //set max width of the slider. if 'auto', width will be 100%
 		speed: 0.5, //animation speed in seconds
 		useTouch: true //allow horizontal swiping on touch devices
 	};
@@ -52,7 +52,11 @@
 			this.el.addClass("slider-view");
 
 			//Set max slideshow width and height
-			$(".slider-wrap").css("max-width", this.settings.slideWidth.toString() + "px");
+			if (this.settings.slideWidth === "auto") {
+				$(".slider-wrap").css("max-width", "100%");
+			} else {
+				$(".slider-wrap").css("max-width", this.settings.slideWidth.toString() + "px");
+			}
 			$(".slider-view").css("height", $(".left-images li").outerHeight());
 
 			//Establish some meta about the slides
