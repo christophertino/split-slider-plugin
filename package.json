@@ -1,6 +1,6 @@
 {
   "name": "splitslider",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "title": "jQuery Split-Slider Plugin",
   "description": "Split Slider is an image carousel that animates an image split into two equal halves. Each half animates vertically from the top or bottom, in opposing directions.",
   "author": {
