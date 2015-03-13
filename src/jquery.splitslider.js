@@ -12,7 +12,8 @@
 		pager: true, //display pager dots below the slider
 		slideWidth: 1000, //set max width of the slider. if 'auto', width will be 100%
 		speed: 0.5, //animation speed in seconds
-		useTouch: true //allow horizontal swiping on touch devices
+		useTouch: true, //allow horizontal swiping on touch devices
+		useCSS: true //use CSS or jQuery animations
 	};
 
 	//Constructor function
@@ -57,7 +58,7 @@
 			this.slideCount = $(".left-images").children().length;
 			this.activeSlide = 1; //not zero based
 			this.rightImgPos = this._buildRightImgArray(this.slideCount);
-			this.browserPrefix = "-" + this._getBrowserPrefix() + "-";
+			this.useCSS = this.settings.useCSS && this._getBrowserPrefix();
 
 			//Make sure we have equal number of left and right slides, captions (optional)
 			if(!this._checkSliderLength(this.settings.captions)) {
@@ -113,16 +114,17 @@
 
 		},
 
-		//Test our browser for appropriate CSS3 prefix
+		//Test our browser for appropriate CSS3 support
 		_getBrowserPrefix: function(){
 			var temp = document.createElement("div");
 			var properties = ["WebkitPerspective", "MozPerspective", "OPerspective", "msPerspective"];
 			for(var i in properties){
 				if(temp.style[properties[i]] !== undefined){
-					return properties[i].replace("Perspective", "").toLowerCase();
+					this.browserPrefix = "-" + properties[i].replace("Perspective", "").toLowerCase() + "-";
+					return true;
 				}
 			}
-			return false;
+			return false; //this means CSS3 not supported
 		},
 
 		//Make sure there are equal numbers left images, right images, and captions
@@ -195,7 +197,25 @@
 				$(".right-images").append(reversed[i]);
 			}
 			var y = -this.slideHeight * this.slideCount;
-			$(".right-images").css(this.browserPrefix + "transform", "translate3d(0, " + y + "px, 0)");
+			if (this.useCSS){
+				$(".right-images").css(this.browserPrefix + "transform", "translate3d(0, " + y + "px, 0)");
+			} else {
+				$(".right-images").css("top", y + "px");
+			}
+		},
+
+		//called at end of async animation callback
+		_updateControls: function(){
+			//update controls
+			if(this.settings.pager) {
+				$(".pager .pager-link").removeClass("active");
+				$(".pager .pager-item").eq(this.activeSlide-1).children(".pager-link").addClass("active");
+			}
+			//update caption
+			if(this.settings.captions) {
+				$(".captions li:visible").hide();
+				$(".captions li").eq(this.activeSlide-1).fadeIn(800);
+			}				
 		},
 
 		//Build our first set of slides on page load
@@ -205,11 +225,17 @@
 
 			//Hide slides and set animation duration
 			var duration = this.settings.speed.toString() + "s";
-			$(".left-images, .right-images").hide().css(this.browserPrefix + "transition-duration", duration);
 
-			//Set start position for left-images
-			$(".left-images").css(this.browserPrefix + "transform", "translate3d(0, " + (-this.slideHeight) + "px, 0)");
-
+			if (this.useCSS) {
+				$(".left-images, .right-images").hide().css(this.browserPrefix + "transition-duration", duration);
+				//Set start position for left-images
+				$(".left-images").css(this.browserPrefix + "transform", "translate3d(0, " + (-this.slideHeight) + "px, 0)");
+			} else {
+				$(".left-images, .right-images").hide();
+				//Set start position for left-images
+				$(".left-images").css("top", -this.slideHeight + "px");
+			}
+			
 			//Clone first and last slides for infinite loop
 			$(".left-images li").eq(0).clone().appendTo(".left-images").addClass("clone");
 			$(".left-images li").eq(this.slideCount-1).clone().prependTo(".left-images").addClass("clone");
@@ -248,9 +274,16 @@
 			//redraw slides
 			var leftYPos = -(this.activeSlide * this.slideHeight);
 			var rightYPos = -(this.rightImgPos[this.activeSlide-1] * this.slideHeight);
-			$(".left-images, .right-images").css(this.browserPrefix + "transition-duration", "0s");
-			$(".left-images").css(this.browserPrefix + "transform", "translate3d(0, " + leftYPos + "px, 0)");
-			$(".right-images").css(this.browserPrefix + "transform", "translate3d(0, " + rightYPos + "px, 0)");
+
+			//fix position of elements during resize
+			if(this.useCSS) {
+				$(".left-images, .right-images").css(this.browserPrefix + "transition-duration", "0s");
+				$(".left-images").css(this.browserPrefix + "transform", "translate3d(0, " + leftYPos + "px, 0)");
+				$(".right-images").css(this.browserPrefix + "transform", "translate3d(0, " + rightYPos + "px, 0)");
+			} else {
+				$(".left-images").css("top", leftYPos + "px");
+				$(".right-images").css("top", rightYPos + "px");
+			}
 
 			//Signifies the end of each resize event
 			var end = setTimeout(function(self){
@@ -323,7 +356,9 @@
 		animateSlide: function (direction, slideIndex) {
 			//re-establish duration
 			var duration = this.settings.speed.toString() + "s";
-			$(".left-images, .right-images").css(this.browserPrefix + "transition-duration", duration);
+			if (this.useCSS) {
+				$(".left-images, .right-images").css(this.browserPrefix + "transition-duration", duration);
+			}
 
 			var leftYPos = -(this.activeSlide * this.slideHeight);
 			var rightYPos = -(this.rightImgPos[this.activeSlide-1] * this.slideHeight);
@@ -341,61 +376,84 @@
 				rightYPos += this.slideHeight;
 			}
 
-			//we are using translate3d in order to support hardware acceleration in IOS
-			$(".left-images").css(this.browserPrefix + "transform", "translate3d(0, " + leftYPos + "px, 0)");
-			$(".right-images").css(this.browserPrefix + "transform", "translate3d(0, " + rightYPos + "px, 0)");
+			if (this.useCSS) {
+				//we are using translate3d in order to support hardware acceleration in IOS
+				$(".left-images").css(this.browserPrefix + "transform", "translate3d(0, " + leftYPos + "px, 0)");
+				$(".right-images").css(this.browserPrefix + "transform", "translate3d(0, " + rightYPos + "px, 0)");
 
-			//wait until animation completes
-			$(".right-images").on("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){
-				var y;
-				//make adjustments for the final slide
-				if (this.activeSlide === this.slideCount && direction === "next") {
-					//reset duration for a moment
-					$(".left-images, .right-images").css(this.browserPrefix + "transition-duration", "0s");
+				//wait until animation completes
+				$(".right-images").on("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){
+					var y;
+					//make adjustments for the final slide
+					if (this.activeSlide === this.slideCount && direction === "next") {
+						//reset duration for a moment
+						$(".left-images, .right-images").css(this.browserPrefix + "transition-duration", "0s");
 
-					//reset position to beginning
-					$(".left-images").css(this.browserPrefix + "transform", "translate3d(0, " + (-this.slideHeight) + "px, 0)");
+						//reset position to beginning
+						$(".left-images").css(this.browserPrefix + "transform", "translate3d(0, " + (-this.slideHeight) + "px, 0)");
 
-					y = -this.slideHeight * this.slideCount;
-					$(".right-images").css(this.browserPrefix + "transform", "translate3d(0, " + y + "px, 0)");
+						y = -this.slideHeight * this.slideCount;
+						$(".right-images").css(this.browserPrefix + "transform", "translate3d(0, " + y + "px, 0)");
 
-					this.activeSlide = 1;
-				} else if (this.activeSlide === 1 && direction === "prev") {
-					//reset duration for a moment
-					$(".left-images, .right-images").css(this.browserPrefix + "transition-duration", "0s");
+						this.activeSlide = 1;
+					} else if (this.activeSlide === 1 && direction === "prev") {
+						//reset duration for a moment
+						$(".left-images, .right-images").css(this.browserPrefix + "transition-duration", "0s");
 
-					//reset position to beginning
-					y = -this.slideHeight * this.slideCount;
-					$(".left-images").css(this.browserPrefix + "transform", "translate3d(0, " + y + "px, 0)");
+						//reset position to beginning
+						y = -this.slideHeight * this.slideCount;
+						$(".left-images").css(this.browserPrefix + "transform", "translate3d(0, " + y + "px, 0)");
 
-					$(".right-images").css(this.browserPrefix + "transform", "translate3d(0, " + (-this.slideHeight) + "px, 0)");
+						$(".right-images").css(this.browserPrefix + "transform", "translate3d(0, " + (-this.slideHeight) + "px, 0)");
 
-					this.activeSlide = this.slideCount;
-				} else {
-					//update active slide index
-					if (direction === "pager") {
-						//this.activeSlide = slideIndex;
-					} else if (direction === "prev") {
-						this.activeSlide--;
+						this.activeSlide = this.slideCount;
 					} else {
-						this.activeSlide++;
+						//update active slide index
+						if (direction === "pager") {
+							//this.activeSlide = slideIndex;
+						} else if (direction === "prev") {
+							this.activeSlide--;
+						} else {
+							this.activeSlide++;
+						}
 					}
-				}
+					this._updateControls();
+					$(".right-images").off("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd");
+				}.bind(this));
+			} else {
+				//Using jQuery Animation
+				$.when($(".left-images").animate({"top": leftYPos + "px"}, duration), $(".right-images").animate({"top": rightYPos + "px"}, duration)).then(function(){
+					var y;
+					//final slide
+					if (this.activeSlide === this.slideCount && direction === "next") {
+						//reset position to beginning
+						$(".left-images").css("top", (-this.slideHeight) + "px");
 
-				//update controls
-				if(this.settings.pager) {
-					$(".pager .pager-link").removeClass("active");
-					$(".pager .pager-item").eq(this.activeSlide-1).children(".pager-link").addClass("active");
-				}
+						y = -this.slideHeight * this.slideCount;
+						$(".right-images").css("top", y + "px");
+						
+						this.activeSlide = 1;
+					} else if (this.activeSlide === 1 && direction === "prev") {
+						//reset position to beginning
+						y = -this.slideHeight * this.slideCount;
+						$(".left-images").css("top", y + "px");
 
-				//update caption
-				if(this.settings.captions) {
-					$(".captions li:visible").hide();
-					$(".captions li").eq(this.activeSlide-1).fadeIn(500);
-				}
+						$(".right-images").css("top", (-this.slideHeight) + "px");
 
-				$(".right-images").off("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd");
-			}.bind(this));
+						this.activeSlide = this.slideCount;
+					} else {
+						//update active slide index
+						if (direction === "pager") {
+							//this.activeSlide = slideIndex;
+						} else if (direction === "prev") {
+							this.activeSlide--;
+						} else {
+							this.activeSlide++;
+						}
+					}
+					this._updateControls();	
+				}.bind(this));
+			}	
 		},
 
 		//Fire up the auto-rotation
@@ -440,3 +498,25 @@
 	};
 
 })(jQuery, window, document);
+
+/**
+ * IE Conditional
+ * Fixes scoping of 'this' inside setTimeout() and setInterval()
+ * https://developer.mozilla.org/en-US/docs/Web/API/WindowTimers/setTimeout#The_%27this%27_problem
+ */
+/*@cc_on
+  // conditional IE < 9 only fix
+  @if (@_jscript_version <= 9)
+  console.log("JavaScript version: " + @_jscript_version + ".");
+  (function(f){
+     window.setTimeout =f(window.setTimeout);
+     window.setInterval =f(window.setInterval);
+  })(function(f){
+  	return function(c,t){
+  		var a=[].slice.call(arguments,2);
+  		return f(function(){
+  			c.apply(this,a)},t)
+  		}
+  	});
+  @end
+@*/
